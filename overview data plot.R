@@ -49,21 +49,30 @@ means <- means %>%
 
 custom_colors <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", 
                    "#e377c2", "#7f7f7f", "#bcbd22", "#17becf", "#9edae5", "#c5b0d5", 
-                   "#f7b6d2", "#c49c94", "#ffbb78", "#98df8a") 
+                   "#f7b6d2", "#c49c94",  "#98df8a","#ffbb78") 
+
+means <- means %>%
+  mutate(
+    linetype_level = ifelse(Strain %in% c("ECA396", "JU1400", "ECA36", "XZ1516"), "longdash", "solid")
+  )
+
+
 
 means %>%
-  ggplot(aes(jittered_ethanol, broodsize_nor, colour = Strain, group = Strain)) +
-  geom_point(aes(colour = Strain), size = 3, alpha = 0.4) +
-  geom_line(alpha = 0.2, size = 1.75) +
+  ggplot(aes(jittered_ethanol, broodsize_nor, colour = Strain, group = Strain, linetype = linetype_level)) +
+  geom_point(aes(colour = Strain), size = 3, alpha = 0.5) +
+  geom_line(aes(), size = 1.5, alpha = 0.3) +
   geom_errorbar(
     aes(x = jittered_ethanol,
         ymin = broodsize_nor - standard_error, 
         ymax = broodsize_nor + standard_error),
     width = 0.01, 
-    alpha = 0.4) +
+    alpha = 0.4, linetype = "solid") +
   scale_color_manual(values = custom_colors)+
+  scale_linetype_manual(values = c("solid" = "solid", "longdash" = "longdash"))+
   labs(x = "Ethanol concentration (mM)", 
     y = "Normalized brood size")+
-  theme_minimal()
+  theme_minimal()+
+  guides(linetype = "none")
 
 
